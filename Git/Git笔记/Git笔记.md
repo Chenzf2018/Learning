@@ -81,6 +81,13 @@ GitHub是提供Git仓库托管服务的，所以，只要注册一个GitHub账�
 
 `GitHub允许你添加多个Key`。假定你有若干电脑，你一会儿在公司提交，一会儿在家里提交，只要把每台电脑的Key都添加到GitHub，就可以在每台电脑上往GitHub推送了。
 
+使用命令测试连接是否正常：
+
+```powershell
+$ ssh -T git@github.com
+Hi Chenzf2018! You've successfully authenticated,
+```
+
 
 
 ## 添加远程库
@@ -91,7 +98,31 @@ GitHub是提供Git仓库托管服务的，所以，只要注册一个GitHub账�
 
 ![image-20201024170945960](Git笔记.assets/image-20201024170945960.png)
 
+在本地的Repositories仓库下运行命令：`用origin替代git@github.com:Chenzf2018/learningGit.git`
 
+```powershell
+Chenzf@Chenzf-desktop MINGW64 /d/Git/Repositories (master)
+$ git remote add origin git@github.com:Chenzf2018/learningGit.git 
+```
+
+添加后，远程库的名字就是`origin`，这是Git默认的叫法，也可以改成别的，但是`origin`这个名字一看就知道是远程库。
+
+
+
+## 推送到远程仓库
+
+把本地库的所有内容推送到远程库上：
+
+```shell
+Chenzf@Chenzf-desktop MINGW64 /d/Git/LearningGit (master)
+$ git push -u origin master
+```
+
+把本地库的内容推送到远程，用`git push`命令，实际上是把当前分支master推送到远程。
+
+由于远程库是空的，我们第一次推送master分支时，加上了`-u`参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支和远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。
+
+推送成功后，可以立刻在GitHub页面中看到远程库的内容已经和本地一模一样。从现在起，只要本地作了提交，就可以通过命令：`$ git push origin master`，把本地master分支的最新修改推送至GitHub！
 
 
 
