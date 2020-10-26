@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.EmployeeDAO">
+
+    <!--findAllEmployee-->
+    <select id="findAllEmployee" resultType="Employee">
+        SELECT * FROM table_employee;
+    </select>
+
+    <!--addEmployee-->
+    <insert id="addEmployee" parameterType="Employee">
+        INSERT INTO table_employee VALUES (#{id}, #{employeename}, #{salary}, #{age}, #{birthday});
+    </insert>
+
+    <!--deleteEmployee-->
+    <delete id="deleteEmployee" parameterType="String">
+        DELETE FROM table_employee WHERE id = #{id};
+    </delete>
+
+    <!--findEmployee根据id查询员工-->
+    <select id="findEmployee" parameterType="String" resultType="Employee">
+        SELECT id, employeename, salary, age, birthday FROM table_employee
+        WHERE id = #{id};
+    </select>
+
+    <!--update更新员工信息-->
+    <update id="update" parameterType="Employee">
+        UPDATE table_employee SET employeename = #{employeename}, salary = #{salary}, age = #{age}, birthday = #{birthday}
+        WHERE id = #{id};
+    </update>
+
+</mapper>

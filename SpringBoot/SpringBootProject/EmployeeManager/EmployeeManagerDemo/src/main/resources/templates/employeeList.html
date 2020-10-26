@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+	<head>
+		<title>Employee List</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+	</head>
+	<body>
+		<div id="wrap">
+			<div id="top_content"> 
+				<div id="header">
+					<div id="rightheader">
+						<p>
+							2020/10/25
+							<br />
+						</p>
+					</div>
+					<div id="topheader">
+						<h1 id="title">
+							<a href="#">main</a>
+						</h1>
+					</div>
+					<div id="navigation">
+					</div>
+				</div>
+				<div id="content">
+					<p id="whereami">
+					</p>
+					<h1>
+						Welcome!
+					</h1>
+					<table class="table">
+						<tr class="table_header">
+							<td>
+								ID
+							</td>
+							<td>
+								Name
+							</td>
+							<td>
+								Salary
+							</td>
+							<td>
+								Age
+							</td>
+							<td>
+								Birthday
+							</td>
+							<td>
+								Operation
+							</td>
+						</tr>
+						<tr class="row1" th:each="employee:${employees}">
+							<td>
+								<span th:text="${employee.id}"/>
+							</td>
+							<td>
+								<span th:text="${employee.employeename}"/>
+							</td>
+							<td>
+								<span th:text="${employee.salary}"/>
+							</td>
+							<td>
+								<span th:text="${employee.age}"/>
+							</td>
+							<td>
+								<span th:text="${#dates.format(employee.birthday, 'yyyy-MM-dd')}"/>
+							</td>
+							<td>
+								<a th:href="@{/EmployeeController/DeleteEmployee(id=${employee.id})}">delete</a>&nbsp;
+								<a th:href="@{/EmployeeController/FindEmployee(id=${employee.id})}">update</a>
+							</td>
+						</tr>
+					</table>
+					<p>
+						<input type="button" class="button" value="Add Employee" onclick="location.href='/employee_manager/AddEmployee'"/>
+					</p>
+				</div>
+			</div>
+			<div id="footer">
+				<div id="footer_bg">
+				chen_zufeng@sjtu.edu.cn
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
