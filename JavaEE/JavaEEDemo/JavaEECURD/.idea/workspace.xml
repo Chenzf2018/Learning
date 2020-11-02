@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="afebee02-e871-4080-98fe-339eea0fd9f5" name="Default Changelist" comment="">
+    <list default="true" id="707ff56d-6c48-485d-a603-5d568cc4b1fc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../../JavaEE.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../JavaEE.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../j2ee.rar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HelloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HelloServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/WEB-INF/classes/HelloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/web/WEB-INF/classes/HelloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/web/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../j2ee/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../j2ee/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../j2ee/src/HelloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/../j2ee/src/HelloServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../j2ee/web/WEB-INF/classes/HelloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/../j2ee/web/WEB-INF/classes/HelloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../j2ee/web/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../j2ee/web/WEB-INF/web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/.classpath" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/.project" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
@@ -23,53 +23,54 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FUSProjectUsageTrigger">
-    <session id="-1206429143">
+    <session id="362584891">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="2" />
-          <entry key="project.open.time.17" value="1" />
-          <entry key="project.open.time.4" value="1" />
+          <entry key="project.open.time.11" value="1" />
+          <entry key="project.open.time.7" value="1" />
           <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="class" value="77" />
+          <entry key="class" value="92" />
           <entry key="html" value="2" />
-          <entry key="java" value="23" />
-          <entry key="xml" value="6" />
+          <entry key="java" value="35" />
+          <entry key="xml" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CLASS" value="77" />
+          <entry key="CLASS" value="92" />
           <entry key="HTML" value="2" />
-          <entry key="JAVA" value="23" />
-          <entry key="XML" value="6" />
+          <entry key="JAVA" value="35" />
+          <entry key="XML" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="24" />
-          <entry key="java" value="1761" />
-          <entry key="xml" value="149" />
+          <entry key="html" value="19" />
+          <entry key="java" value="3230" />
+          <entry key="xml" value="113" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="24" />
-          <entry key="JAVA" value="1761" />
-          <entry key="XML" value="149" />
+          <entry key="HTML" value="19" />
+          <entry key="JAVA" value="3230" />
+          <entry key="XML" value="113" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="Class" />
       </list>
     </option>
@@ -80,14 +81,16 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/web/login.html" />
-        <option value="$PROJECT_DIR$/src/TestRequest.java" />
-        <option value="$PROJECT_DIR$/src/RegisterServlet.java" />
-        <option value="$PROJECT_DIR$/web/register.html" />
-        <option value="$PROJECT_DIR$/src/HelloServlet.java" />
+        <option value="$PROJECT_DIR$/src/bean/Hero.java" />
+        <option value="$PROJECT_DIR$/src/HeroListServlet.java" />
+        <option value="$PROJECT_DIR$/src/servlet/HeroAddServlet.java" />
+        <option value="$PROJECT_DIR$/src/dao/HeroDAO.java" />
+        <option value="$PROJECT_DIR$/web/addHero.html" />
+        <option value="$PROJECT_DIR$/src/servlet/HeroDeleteServlet.java" />
+        <option value="$PROJECT_DIR$/src/servlet/HeroEditServlet.java" />
+        <option value="$PROJECT_DIR$/src/servlet/HeroUpdateServlet.java" />
         <option value="$PROJECT_DIR$/web/WEB-INF/web.xml" />
-        <option value="$PROJECT_DIR$/src/TestResponse.java" />
-        <option value="$PROJECT_DIR$/src/LoginServlet.java" />
+        <option value="$PROJECT_DIR$/src/servlet/HeroListServlet.java" />
       </list>
     </option>
   </component>
@@ -97,7 +100,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="388" />
     <option name="y" value="22" />
     <option name="width" value="1216" />
@@ -109,38 +112,57 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="bean" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="dao" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="servlet" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
               <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
               <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
               <item name="classes" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
+              <item name="JavaEECURD" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
@@ -148,13 +170,13 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1604211256420" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1604308189057" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../servlet-api.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -165,7 +187,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Learning\JavaEE\JavaEEDemo\j2ee\web\WEB-INF\classes" />
+      <recent name="D:\Learning\JavaEE\JavaEEDemo\JavaEECURD\web\WEB-INF\classes" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -185,18 +207,18 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="afebee02-e871-4080-98fe-339eea0fd9f5" name="Default Changelist" comment="" />
-      <created>1603978742268</created>
+      <changelist id="707ff56d-6c48-485d-a603-5d568cc4b1fc" name="Default Changelist" comment="" />
+      <created>1604210654720</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1603978742268</updated>
-      <workItem from="1603978744628" duration="3612000" />
-      <workItem from="1604023078611" duration="19114000" />
+      <updated>1604210654720</updated>
+      <workItem from="1604210659456" duration="9872000" />
+      <workItem from="1604303480862" duration="4628000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22726000" />
+    <option name="totallyTimeSpent" value="14500000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
@@ -217,7 +239,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="9" />
+      <window_info anchor="bottom" id="Messages" order="9" weight="0.32949087" />
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Tail" order="12" />
@@ -240,108 +262,114 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/web/login.html">
+    <entry file="jar://D:/WinSoftware/JDK/jdk/src.zip!/java/sql/DriverManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="712">
+          <caret line="236" column="33" selection-start-line="236" selection-start-column="33" selection-end-line="236" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bean/Hero.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
-          <caret line="2" column="67" selection-start-line="2" selection-start-column="67" selection-end-line="2" selection-end-column="67" />
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/register.html">
+    <entry file="file://$PROJECT_DIR$/src/servlet/HeroAddServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/addHero.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="16" column="7" lean-forward="true" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/servlet/HeroDeleteServlet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
-          <caret line="12" column="29" selection-start-line="12" selection-start-column="29" selection-end-line="12" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/RegisterServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="24" column="1" selection-start-line="24" selection-start-column="1" selection-end-line="24" selection-end-column="1" />
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TestRequest.java">
+    <entry file="file://$PROJECT_DIR$/src/dao/HeroDAO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="83" column="16" selection-start-line="83" selection-start-column="16" selection-end-line="83" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/servlet/HeroEditServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="814">
+          <caret line="37" selection-start-line="37" selection-end-line="37" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/servlet/HeroUpdateServlet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="660">
-          <caret line="30" column="12" lean-forward="true" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="64" />
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/../servlet-api.jar!/javax/servlet/http/HttpServlet.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2178">
-          <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web/WEB-INF/web.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="45" column="51" selection-start-line="45" selection-start-column="51" selection-end-line="45" selection-end-column="51" />
+        <state relative-caret-position="837">
+          <caret line="53" column="10" selection-start-line="53" selection-start-column="10" selection-end-line="53" selection-end-column="10" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/HelloServlet.java">
+    <entry file="file://$PROJECT_DIR$/src/servlet/HeroListServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#356#357#0" expanded="true" />
-            <element signature="e#414#415#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TestResponse.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="484">
+          <caret line="22" column="80" selection-start-line="22" selection-start-column="80" selection-end-line="22" selection-end-column="80" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/LoginServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="836">
-          <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/HelloServlet.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/LoginServlet.class">
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/bean/Hero.class">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/RegisterServlet.class">
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/dao/HeroDAO.class">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/TestRequest.class">
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/servlet/HeroAddServlet.class">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/TestResponse.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="18" column="36" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="36" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/servlet/HeroEditServlet.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/servlet/HeroListServlet.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/servlet/HeroDeleteServlet.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/WEB-INF/classes/servlet/HeroUpdateServlet.class">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
   <component name="masterDetails">
@@ -395,7 +423,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>j2ee</last-edited>
+          <last-edited>JavaEECURD</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
