@@ -2101,5 +2101,590 @@ public class HeroUpdateServlet extends HttpServlet {
 
 通过[Servlet](# Servlet)进行整个网站的开发是可以的，不过在Servlet中输出html代码，特别是稍微复杂一点的html代码会很麻烦。
 
-JSP能够直接使用html代码，然后在html中写java代码。
+```java
+package servlet;
 
+import bean.Hero;
+import dao.HeroDAO;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class HeroEditServlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            Hero hero = new HeroDAO().get(id);
+
+            StringBuffer stringBuffer = new StringBuffer();
+            response.setContentType("text/html; charset=UTF-8");
+
+            stringBuffer.append("<!DOCTYPE html>");
+            stringBuffer.append("<form action='updateHero' method='post'>");
+            stringBuffer.append("名字：<input type='text' name='name' value='%s' > <br>");
+            stringBuffer.append("血量：<input type='text' name='hp'  value='%f' > <br>");
+            stringBuffer.append("伤害：<input type='text' name='damage'  value='%d' > <br>");
+            stringBuffer.append("<input type='hidden' name='id' value='%d'>");
+            stringBuffer.append("<input type='submit' value='更新'>");
+            stringBuffer.append("</form>");
+            
+            String html = String.format(stringBuffer.toString(), hero.getName(), hero.getHp(), hero.getDamage(), hero.getId());
+            response.getWriter().write(html);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+JSP能够直接使用html代码，然后`在html中写java代码`。
+
+1. 项目地址：`D:/Learning/JavaEE/JavaEEDemo/j2ee`；[Tomcat部署](# Tomcat部署)——修改`D:\WinSoftware\tomcat_8080\conf\server.xml`中
+
+   ```xml
+   <Context path="/" docBase="D:\\Learning\\JavaEE\\JavaEEDemo\\j2ee\\web" debug="0" reloadable="false" />
+   ```
+
+   
+
+2. **在web目录下**新建一个文件`helloJSP.jsp`
+
+   ```jsp
+   <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="java.util.*"%>
+   
+   你好 JSP
+   
+   <br>
+   
+   <%=new Date().toLocaleString()%>
+   ```
+
+   
+
+3. 访问地址http://127.0.0.1:8090/helloJSP.jsp
+
+   ![image-20201102210627846](JavaEE.assets/image-20201102210627846.png)
+
+   
+
+## JSP执行过程
+
+因为JSP被转译成了[Servlet](# Servlet)，所以JSP可以在html中运行java代码。
+
+1. 把`hello.jsp`**转译**为`hello_jsp.java`
+
+   - `hello_jsp.java`位于`D:\WinSoftware\tomcat_8080\work\Catalina\localhost\_\org\apache\jsp`
+
+   - `hello_jsp.java`**是一个servlet**
+
+2. 把`hello_jsp.java`**编译**为`hello_jsp.class`
+
+3. 执行`hello_jsp`，生成html
+
+4. 通过http协议把html响应返回给浏览器
+
+![image-20201102211453755](JavaEE.assets/image-20201102211453755.png)
+
+在[Servlet](# Servlet)章节中，我们说`HelloServlet`是一个`Servlet`，不是因为它的类名里有一个"Servlet"，而是因为它继承了**`HttpServlet`**！
+
+打开转译`hello.jsp`后得到的`hello_jsp.java`，可以发现它继承了类`HttpJspBase`：
+
+```java
+public final class helloJSP_jsp extends org.apache.jasper.runtime.HttpJspBase
+    implements org.apache.jasper.runtime.JspSourceDependent
+```
+
+而`HttpJspBase`继承了`HttpServlet`。
+
+所以我们说`hello_.jsp.java`是一个`Servlet`！
+
+
+
+# MVC
+
+1. 仅使用Servlet的短处
+
+   [HeroEditServlet](# 创建HeroEditServlet)根据浏览器提交的id，通过`HeroDAO`找到对应的Hero，然后在Servlet中组织html显示出来：
+
+   ```java
+   package servlet;
+   
+   import bean.Hero;
+   import dao.HeroDAO;
+   
+   import javax.servlet.http.HttpServlet;
+   import javax.servlet.http.HttpServletRequest;
+   import javax.servlet.http.HttpServletResponse;
+   import java.io.IOException;
+   
+   public class HeroEditServlet extends HttpServlet {
+       @Override
+       protected void service(HttpServletRequest request, HttpServletResponse response) {
+           try {
+               int id = Integer.parseInt(request.getParameter("id"));
+               Hero hero = new HeroDAO().get(id);
+   
+               StringBuffer stringBuffer = new StringBuffer();
+               response.setContentType("text/html; charset=UTF-8");
+   
+               stringBuffer.append("<!DOCTYPE html>");
+               stringBuffer.append("<form action='updateHero' method='post'>");
+               stringBuffer.append("名字：<input type='text' name='name' value='%s' > <br>");
+               stringBuffer.append("血量：<input type='text' name='hp'  value='%f' > <br>");
+               stringBuffer.append("伤害：<input type='text' name='damage'  value='%d' > <br>");
+               stringBuffer.append("<input type='hidden' name='id' value='%d'>");
+               stringBuffer.append("<input type='submit' value='更新'>");
+               stringBuffer.append("</form>");
+               
+               String html = String.format(stringBuffer.toString(), hero.getName(), hero.getHp(), hero.getDamage(), hero.getId());
+               response.getWriter().write(html);
+               
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
+   }
+   ```
+
+   可以看到这个Servlet**不仅要准备数据，还要准备html**。尤其是准备html，可读性非常差，维护起来也很麻烦！
+
+   
+
+2. 仅使用JSP的短处
+
+   因为在Servlet中编写html有这样的短板，所以索性直接在JSP中开发编辑Hero这个功能：
+
+   ```jsp
+   <%@ page language="java" contentType="text/html; charset=UTF-8"
+       pageEncoding="UTF-8" import="java.util.*,bean.*,java.sql.*"%>
+    
+   <%
+       int id = Integer.parseInt(request.getParameter("id"));
+       Hero hero = null;
+       try {
+           Class.forName("com.mysql.jdbc.Driver");
+        
+           Connection c = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/how2java?characterEncoding=UTF-8",
+                   "root", "admin");
+        
+           Statement s = c.createStatement();
+        
+           String sql = "select * from hero where id = " + id;
+        
+           ResultSet rs = s.executeQuery(sql);
+        
+           if (rs.next()) {
+               hero = new Hero();
+               String name = rs.getString(2);
+               float hp = rs.getFloat("hp");
+               int damage = rs.getInt(4);
+               hero.name = name;
+               hero.hp = hp;
+               hero.damage = damage;
+               hero.id = id;
+           }
+        
+           s.close();
+        
+           c.close();
+        
+       } catch (ClassNotFoundException e) {
+           // TODO Auto-generated catch block
+           e.printStackTrace();
+       } catch (SQLException e) {
+           // TODO Auto-generated catch block
+           e.printStackTrace();
+       }
+        
+   %>
+    
+   <form action='updateHero' method='post'>
+       名字 ： <input type='text' name='name' value='<%=hero.getName()%>'> <br>
+       血量 ：<input type='text' name='hp' value='<%=hero.getHp()%>'> <br>
+       伤害： <input type='text' name='damage' value='<%=hero.getDamage()%>'> <br>
+       <input type='hidden' name='id' value='<%=hero.getId()%>'>
+       <input type='submit' value='更新'>
+   </form>
+   ```
+
+   这时会发现，**虽然编写html方便了，但是写java代码不如在Servlet中那么方便**！
+
+
+
+3. 结合Servlet和JSP
+
+   - **HeroEditServlet**：只用来从数据库中查询Hero对象，然后跳转到JSP页面：
+
+     ```java
+     package servlet;
+      
+     import java.io.IOException;
+      
+     import javax.servlet.ServletException;
+     import javax.servlet.http.HttpServlet;
+     import javax.servlet.http.HttpServletRequest;
+     import javax.servlet.http.HttpServletResponse;
+      
+     import bean.Hero;
+     import dao.HeroDAO;
+      
+     public class HeroEditServlet extends HttpServlet {
+      
+         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+             int id = Integer.parseInt(request.getParameter("id"));
+             Hero hero = new HeroDAO().get(id);
+             request.setAttribute("hero", hero);
+             request.getRequestDispatcher("editHero.jsp").forward(request, response);
+         }
+     }
+     ```
+
+     
+
+   - **editHero.jsp:** 不做查询数据库的事情，直接获取从`HeroEditServlet`传过来的Hero对象，通过EL表达式把request中的hero显示出来：
+
+     ```jsp
+     <%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" import="java.util.*,bean.*,java.sql.*"%>
+      
+     <form action='updateHero' method='post'>
+         名字 ： <input type='text' name='name' value='${hero.name}'> <br>
+         血量 ：<input type='text' name='hp' value='${hero.hp}'> <br>
+         伤害： <input type='text' name='damage' value='${hero.damage}'> <br>
+         <input type='hidden' name='id' value='${hero.id}'>
+         <input type='submit' value='更新'>
+     </form>
+     ```
+
+     
+
+## MVC设计模式
+
+上述例子中结合Serlvet和JSP进行数据的显示，就是一种MVC的思想。
+
+- `M`代表`模型**Model**`——模型就是`数据`，就是`dao、bean`
+- `V`代表`视图**View**`——就是网页，JSP，用来`展示模型中的数据`
+- `C`代表`控制器**controller**`——控制器的作用就是把不同的数据(Model)，显示在不同的视图(View)上。
+
+在这个例子中，Servlet就是充当控制器的角色，把Hero对象，显示在JSP上。
+
+![image-20201102214316423](JavaEE.assets/image-20201102214316423.png)
+
+
+
+## 实例
+
+项目地址：`D:\Learning\JavaEE\JavaEEDemo\MVCServletJSP`
+
+### 项目配置
+
+1. [导入servlet-api](# 创建项目导入servlet-api)和`mysql-connector-java-5.0.8-bin.jar`
+
+   为了能够在JSP 中使用JSTL，需要两个jar包：`jstl.jar`和`standard.jar`
+
+2. [指定项目输出到classes目录](# 指定项目输出到classes目录)
+
+3. [配置tomcat的server.xml](# 配置tomcat的server.xml)
+
+
+
+### 创建实体类
+
+`bean.Hero`
+
+```java
+package bean;
+
+public class Hero {
+    private int id;
+    private String name;
+    private float hp;
+    private int damage;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public float getHp() {
+        return hp;
+    }
+
+    public void setHp(float hp) {
+        this.hp = hp;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+}
+```
+
+
+
+### 创建HeroDAO
+
+`dao.HeroDAO`
+
+```java
+package dao;
+
+import bean.Hero;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class HeroDAO {
+
+    public HeroDAO() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/javaeecurd?characterEncoding=UTF-8",
+                "root", "admin");
+    }
+
+    public int getTotal() {
+        int total = 0;
+        try(Connection connection = getConnection(); Statement statement = connection.createStatement();) {
+            String sql = "SELECT COUNT(*) FROM hero";
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                total = resultSet.getInt(1);
+            }
+            System.out.println("Total: " + total);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return total;
+    }
+
+    public void add(Hero hero) {
+        String sql = "INSERT INTO hero VALUES(null, ?, ?, ?)";
+        try(Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, hero.name);
+            preparedStatement.setFloat(2, hero.hp);
+            preparedStatement.setInt(3, hero.damage);
+
+            preparedStatement.execute();
+
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                hero.id = id;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(int id) {
+        try(Connection connection = getConnection(); Statement statement = connection.createStatement();) {
+            String sql = "DELETE FROM hero WHERE id = " + id;
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(Hero hero) {
+        String sql = "UPDATE hero SET name = ?, hp = ?, damage = ? WHERE id = ?";
+        try(Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
+            preparedStatement.setString(1, hero.name);
+            preparedStatement.setFloat(2, hero.hp);
+            preparedStatement.setInt(3, hero.damage);
+            preparedStatement.setInt(4, hero.id);
+
+            preparedStatement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Hero get(int id) {
+        Hero hero = null;
+        try(Connection connection = getConnection(); Statement statement = connection.createStatement();) {
+            String sql = "SELECT * FROM hero WHERE id = " + id;
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                hero = new Hero();
+                String name = resultSet.getString(2);
+                float hp = resultSet.getFloat("hp");
+                int damage = resultSet.getInt(4);
+
+                hero.name = name;
+                hero.hp = hp;
+                hero.damage = damage;
+                hero.id = id;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return hero;
+    }
+
+    public List<Hero> list() {
+        return list(0, Short.MAX_VALUE);
+    }
+
+    public List<Hero> list(int start, int count) {
+        List<Hero> heroes = new ArrayList<>();
+        String sql = "SELECT * FROM hero ORDER BY id DESC LIMIT ?, ?";
+        try(Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql);) {
+            preparedStatement.setInt(1, start);
+            preparedStatement.setInt(2, count);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Hero hero = new Hero();
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                float hp = resultSet.getFloat("hp");
+                int damage = resultSet.getInt(4);
+
+                hero.id = id;
+                hero.name = name;
+                hero.hp = hp;
+                hero.damage = damage;
+                heroes.add(hero);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return heroes;
+    }
+}
+```
+
+
+
+### 创建HeroListServlet
+
+`servlet.HeroListServlet`
+
+作为控制器的`HeroListServlet`，其作用就是通过`dao`获取所有的`heroes`对象，然后放在`request`中，跳转到`listHero.jsp`。
+
+```java
+package servlet;
+
+import bean.Hero;
+import dao.HeroDAO;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+public class HeroListServlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<Hero> heroes = new HeroDAO().list();
+            request.setAttribute("heroes", heroes);
+            request.getRequestDispatcher("listHero.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+### 创建web.xml
+
+`MVCServletJSP\web\WEB-INF\web.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app>
+    <servlet>
+        <servlet-name>HeroListServlet</servlet-name>
+        <servlet-class>servlet.HeroListServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HeroListServlet</servlet-name>
+        <url-pattern>/listHero</url-pattern>
+    </servlet-mapping>
+</web-app>
+```
+
+
+
+### 创建listHero.jsp
+
+在`web`目录下创建`listHero.jsp`：
+
+```jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" import="java.util.*"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<table align='center' border='1' cellspacing='0'>
+    <tr>
+        <td>id</td>
+        <td>name</td>
+        <td>hp</td>
+        <td>damage</td>
+        <td>edit</td>
+        <td>delete</td>
+    </tr>
+    <c:forEach items="${heroes}" var="hero" varStatus="st">
+        <tr>
+            <td>${hero.id}</td>
+            <td>${hero.name}</td>
+            <td>${hero.hp}</td>
+            <td>${hero.damage}</td>
+            <td><a href="editHero?id=${hero.id}">edit</a></td>
+            <td><a href="deleteHero?id=${hero.id}">delete</a></td>
+        </tr>
+    </c:forEach>
+</table>
+```
+
+
+
+### 测试
+
+- 点击`Build Project`，将`xxx.class`放在`j2ee\web\WEB-INF\classes`下
+
+- 启动Tomcat：`‪D:\WinSoftware\tomcat_8080\bin\startup.bat`
+
+- 访问页面：http://127.0.0.1:8090/listHero
+
+![image-20201102225828576](JavaEE.assets/image-20201102225828576.png)

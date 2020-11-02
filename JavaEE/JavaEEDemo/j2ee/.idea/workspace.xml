@@ -3,17 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="afebee02-e871-4080-98fe-339eea0fd9f5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../../JavaEE.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../JavaEE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../j2ee.rar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../JavaEECURD/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../JavaEECURD/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/HelloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HelloServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/WEB-INF/classes/HelloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/web/WEB-INF/classes/HelloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/web/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/.classpath" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/.project" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/src/HelloServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/web/WEB-INF/classes/HelloServlet.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../新建文件夹/j2ee/web/WEB-INF/web.xml" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,10 +17,11 @@
     <session id="-1206429143">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="4" />
+          <entry key="project.open.time.0" value="2" />
           <entry key="project.open.time.17" value="1" />
           <entry key="project.open.time.4" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -37,6 +29,7 @@
           <entry key="class" value="77" />
           <entry key="html" value="2" />
           <entry key="java" value="23" />
+          <entry key="jsp" value="1" />
           <entry key="xml" value="6" />
         </counts>
       </usages-collector>
@@ -45,6 +38,7 @@
           <entry key="CLASS" value="77" />
           <entry key="HTML" value="2" />
           <entry key="JAVA" value="23" />
+          <entry key="JSP" value="1" />
           <entry key="XML" value="6" />
         </counts>
       </usages-collector>
@@ -52,6 +46,7 @@
         <counts>
           <entry key="html" value="24" />
           <entry key="java" value="1761" />
+          <entry key="jsp" value="6" />
           <entry key="xml" value="149" />
         </counts>
       </usages-collector>
@@ -59,13 +54,24 @@
         <counts>
           <entry key="HTML" value="24" />
           <entry key="JAVA" value="1761" />
+          <entry key="JSP" value="6" />
           <entry key="XML" value="149" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/web/helloJSP.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="154">
+              <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -88,6 +94,7 @@
         <option value="$PROJECT_DIR$/web/WEB-INF/web.xml" />
         <option value="$PROJECT_DIR$/src/TestResponse.java" />
         <option value="$PROJECT_DIR$/src/LoginServlet.java" />
+        <option value="$PROJECT_DIR$/web/helloJSP.jsp" />
       </list>
     </option>
   </component>
@@ -97,7 +104,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="388" />
     <option name="y" value="22" />
     <option name="width" value="1216" />
@@ -109,6 +116,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -128,33 +137,18 @@
             </path>
             <path>
               <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
-              <item name="j2ee" type="462c0819:PsiDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="j2ee" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1604211256420" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1604326048672" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../servlet-api.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -192,16 +186,18 @@
       <updated>1603978742268</updated>
       <workItem from="1603978744628" duration="3612000" />
       <workItem from="1604023078611" duration="19114000" />
+      <workItem from="1604321662759" duration="1363000" />
+      <workItem from="1604328314182" duration="753000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22726000" />
+    <option name="totallyTimeSpent" value="24842000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25226668" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2576" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -340,6 +336,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="242">
           <caret line="18" column="36" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/helloJSP.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
         </state>
       </provider>
     </entry>
