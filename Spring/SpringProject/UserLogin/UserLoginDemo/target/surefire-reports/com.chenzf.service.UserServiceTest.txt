@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------
+Test set: com.chenzf.service.UserServiceTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.893 sec <<< FAILURE!
+testHasMatchUser(com.chenzf.service.UserServiceTest)  Time elapsed: 0.029 sec  <<< FAILURE!
+java.lang.AssertionError: expected [true] but found [false]
+	at org.testng.Assert.fail(Assert.java:94)
+	at org.testng.Assert.failNotEquals(Assert.java:494)
+	at org.testng.Assert.assertTrue(Assert.java:42)
+	at org.testng.Assert.assertTrue(Assert.java:52)
+	at com.chenzf.service.UserServiceTest.testHasMatchUser(UserServiceTest.java:39)

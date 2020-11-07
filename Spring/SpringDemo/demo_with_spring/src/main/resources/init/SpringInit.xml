@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--通过Spring管理组件
+                bean: 用来管理组件对象的创建
+                class: 用来指定管理组件对象的全限定名 包.类
+                        肯定是实现类，只有实现类才能创建对象
+                id: 用来指定Spring框架创建的当前组件在Spring框架（容器、工厂）中的（全局）唯一标识，
+                    方便获取Spring框架中已经创建好的对象
+                    推荐使用当前实现类的接口首字母小写userDAO-->
+    <bean class="init.UserDAOImpl" id="userDAO"></bean>
+
+</beans>

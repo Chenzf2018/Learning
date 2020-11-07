@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="10" verbose="0" name="Failed suite [com.chenzf.service.UserServiceTest]" parallel="methods">
+  <test name="Command line test(failed)" parallel="methods">
+    <classes>
+      <class name="com.chenzf.service.UserServiceTest">
+        <methods>
+          <include name="springTestContextBeforeTestClass"/>
+          <include name="testHasMatchUser"/>
+          <include name="springTestContextPrepareTestInstance"/>
+          <include name="springTestContextAfterTestClass"/>
+          <include name="springTestContextBeforeTestMethod"/>
+          <include name="springTestContextAfterTestMethod"/>
+        </methods>
+      </class> <!-- com.chenzf.service.UserServiceTest -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [com.chenzf.service.UserServiceTest] -->
