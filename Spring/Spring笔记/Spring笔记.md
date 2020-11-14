@@ -307,6 +307,11 @@ name: China
             <artifactId>spring-context</artifactId>
             <version>5.2.5.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.2.5.RELEASE</version>
+        </dependency>
     </dependencies>
 
 </project>
@@ -1229,7 +1234,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 }
 ```
 
-ClassPathXmlApplicationContext执行setConfigLocations方法，通过调用其父类AbstractRefreshableConfigApplicationContext的方法**进行Bean配置信息的定位**
+ClassPathXmlApplicationContext执行`setConfigLocations`方法，通过调用其父类AbstractRefreshableConfigApplicationContext的方法**进行Bean配置信息的定位**
 
 ```java
 public abstract class AbstractRefreshableConfigApplicationContext extends AbstractRefreshableApplicationContext
@@ -1270,7 +1275,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 
 
 
-#### 开始启动refresh
+#### *开始启动refresh
 
 **Spring IoC容器对Bean配置资源的载入是从`refresh()`方法开始的**。
 
@@ -1291,7 +1296,9 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 
 
 
-`refresh()`方法是一个模板方法，规定了IoC容器的启动流程，有些逻辑要交给其子类实现。它**`对Bean配置资源进行载入`**，**`ClassPathXmlApplicationContext`通过调用其父类`AbstractApplicationContext`的`refresh()`方法启动整个IoC容器对Bean定义的载入过程**：
+`refresh()`方法是一个模板方法，规定了IoC容器的启动流程，有些逻辑要交给其子类实现，它是**初始化Spring容器的核心代码**！
+
+它**`对Bean配置资源进行载入`**，**`ClassPathXmlApplicationContext`通过调用其父类`AbstractApplicationContext`的`refresh()`方法启动整个IoC容器对Bean定义的载入过程**：
 
 ```java
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
@@ -1320,23 +1327,28 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			try {
 				// 4.Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
-				// Invoke factory processors registered as beans in the context.
+                
+				// 5.Invoke factory processors registered as beans in the context.
+                // 实例化并调用实现了BeanFactoryPostProcessor接口的Bean
 				invokeBeanFactoryPostProcessors(beanFactory);
-				// Register bean processors that intercept bean creation.
+                
+				// 6.Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
-				// Initialize message source for this context.
+				// 7.Initialize message source for this context.
 				initMessageSource();
-				// Initialize event multicaster for this context.
+				// 8.Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
-				// Initialize other special beans in specific context subclasses.
+				// 9.Initialize other special beans in specific context subclasses.
 				onRefresh();
-				// Check for listener beans and register them.
+				// 10.Check for listener beans and register them.
 				registerListeners();
+                
                 // 创建Bean流程入口
-				// Instantiate all remaining (non-lazy-init) singletons.
+				// 11.Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
+                
 				// Last step: publish corresponding event.
-                // 初始化容器的生命周期事件处理器，并发布容器的生命周期事件
+                // 12.初始化容器的生命周期事件处理器，并发布容器的生命周期事件
 				finishRefresh();
 			}
 
@@ -1449,14 +1461,15 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-            // 创建 IoC 容器
+            // 创建IoC容器
             // 返回一个底层的BeanFactory实例
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+            
 			beanFactory.setSerializationId(getId());
-            // 对 IoC 容器进行定制化，如设置启动参数、开启注解的自动装配等
+            // 对IoC容器进行定制化，如设置启动参数、开启注解的自动装配等
 			customizeBeanFactory(beanFactory);
             
-            // 调用载入 Bean 定义的方法
+            // 调用载入Bean定义的方法
             // 在当前类中只定义了抽象的loadBeanDefinitions方法，调用子类容器实现
 			loadBeanDefinitions(beanFactory);
 			synchronized (this.beanFactoryMonitor) {
@@ -1484,7 +1497,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 
 
 
-先判断beanFactory是否存在，如果存在则先销毁Bean并关闭beanFactory，接着**创建DefaultListableBeanFactory**(`DefaultListableBeanFactory beanFactory = createBeanFactory();`)，并**调用loadBeanDefinitions()方法(`loadBeanDefinitions(beanFactory);`)装载Bean定义**，**Bean对象在Spring实现中是以BeanDefinition来描述的**。
+先判断beanFactory是否存在，如果存在则先销毁Bean并关闭beanFactory，接着**创建DefaultListableBeanFactory**(`DefaultListableBeanFactory beanFactory = createBeanFactory();`)，并**调用loadBeanDefinitions()方法(`loadBeanDefinitions(beanFactory);`==25行==)装载Bean定义**，**`Bean对象在Spring实现中是以BeanDefinition来描述的`**。
 
 
 
@@ -1527,7 +1540,9 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 }
 ```
 
-[此处依次调用多个类的`loadBeanDefinitions`方法，一直调用到XmlBeanDefinitionReader类的doLoadBeanDefinitions方法](https://www.cnblogs.com/chenyanbin/p/11756034.html)，见[读取配置内容](# 读取配置内容)
+[此处依次调用多个类的`loadBeanDefinitions`方法（AbstractXmlApplicationContext、AbstractBeanDefinitionReader、XmlBeanDefinitionReader），一直调用到XmlBeanDefinitionReader类的doLoadBeanDefinitions方法](https://www.cnblogs.com/chenyanbin/p/11756034.html)，见[读取配置内容](# 读取配置内容)！
+
+
 
 **容器真正调用的是其子类AbstractXmlApplicationContext对该方法的实现**：
 
@@ -1554,6 +1569,8 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 		// Allow a subclass to provide custom initialization of the reader,
 		// then proceed with actually loading the bean definitions.
 		initBeanDefinitionReader(beanDefinitionReader);
+        
+        // Bean读取器真正实现加载的方法
 		loadBeanDefinitions(beanDefinitionReader);
 	}
     
@@ -1571,9 +1588,10 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * xml Bean读取器加载Bean配置资源
 	 */
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
-        // 获取 Bean 配置资源的定位
+        // 获取Bean配置资源的定位
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
+            // xml Bean读取器调用其父类AbstractBeanDefinitionReader读取定位的Bean配置资源
 			reader.loadBeanDefinitions(configResources);
 		}
 		String[] configLocations = getConfigLocations();
@@ -1608,11 +1626,11 @@ XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanF
 
 
 
-由于我们使用`ClassPathXmlApplicationContext`作为例子，`getConfigResources()`方法的返回值为null，因此程序执行`reader.loadBeanDefinitions(configLocations)`分支。
+由于我们使用`ClassPathXmlApplicationContext`作为例子，`getConfigResources()`方法的返回值为null，因此程序执行`reader.loadBeanDefinitions(configLocations)`（==第46行==）分支。
 
 
 
-在XmlBeanDefinitionReader的抽象父类AbstractBeanDefinitionReader中定义了载入过程
+点击==第46行==`reader.loadBeanDefinitions(configLocations)`：
 
 ![image-20201112213924001](Spring笔记.assets/image-20201112213924001.png)
 
@@ -1633,8 +1651,8 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 
 		if (resourceLoader instanceof ResourcePatternResolver) {
 			// Resource pattern matching available.
-            // 将指定位置的 Bean 配置信息解析为Spring IoC容器封装的资源
-            // 加载多个指定位置的 Bean 配置信息
+            // 将指定位置的Bean配置信息解析为Spring IoC容器封装的资源
+            // 加载多个指定位置的Bean配置信息
 			try {
 				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
 				int loadCount = loadBeanDefinitions(resources);
@@ -1686,13 +1704,20 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 从AbstractBeanDefinitionReader的loadBeanDefinitions()方法的源码分析可以看出，该方法就做了两件事：
 
 - 首先，调用资源加载器的获取资源方法`resourceLoader.getResource(location)`，**获取要加载的资源**；
+
+  见[解析配置文件路径DefaultResourceLoader](# 解析配置文件路径DefaultResourceLoader)
+
 - 其次，真正**执行加载功能**，**由其子类XmlBeanDefinitionReader的loadBeanDefinitions()方法完成**。
+
+  见[读取配置内容](# 读取配置内容)
 
 
 
 在loadBeanDefinitions()方法中调用了AbstractApplicationContext的getResources()方法，getResources()方法其实在ResourcePatternResolver中定义：
 
 ![image-20201112215212016](Spring笔记.assets/image-20201112215212016.png)
+
+
 
 #### 解析配置文件路径DefaultResourceLoader
 
@@ -1863,9 +1888,9 @@ public class DefaultDocumentLoader implements DocumentLoader {
 [第59行registerBeanDefinitions解析Document获取BeanDefinition信息，并进行注册](https://www.cnblogs.com/chenyanbin/p/11756034.html)，具体过程见[解析](# 解析)部分！！
 
 ```java
-return registerBeanDefinitions(doc, resource);// 将XML文件转换为DOM对象，解析过程由documentLoader()方法实现
 Document doc = doLoadDocument(inputSource, resource);
 // 这里启动对Bean定义解析的详细过程， 该解析过程会用到Spring的Bean配置规则
+// 将XML文件转换为DOM对象，解析过程由documentLoader()方法实现
 return registerBeanDefinitions(doc, resource);
 ```
 
@@ -1948,12 +1973,28 @@ public class DefaultDocumentLoader implements DocumentLoader {
 
 #### 分配解析策略
 
-[XmlBeanDefinitionReader类中的doLoadBeanDefinition()方法](# 读取配置内容)实际上**从特定 XML文件中载入Bean配置信息**的方法，**该方法在载入Bean配置信息之后将其转换为文档对象** 。 
+[XmlBeanDefinitionReader类中的doLoadBeanDefinition()方法](# 读取配置内容)实际上**从特定XML文件中载入Bean配置信息**的方法，**该方法在载入Bean配置信息之后将其转换为文档对象** 。 
 
 接下来**调用registerBeanDefinitions()方法启动Spring IoC容器对Bean定义的解析过程**：
 
 ```java
-/**
+public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+    
+    protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
+			throws BeanDefinitionStoreException {
+        ...
+        try {
+			Document doc = doLoadDocument(inputSource, resource);
+			int count = registerBeanDefinitions(doc, resource);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Loaded " + count + " bean definitions from " + resource);
+			}
+			return count;
+		}
+        ...
+    }
+    
+    /**
 	 * Register the bean definitions contained in the given DOM document. Called by {@code loadBeanDefinitions}.
 	 * <p>Creates a new instance of the parser class and invokes {@code registerBeanDefinitions} on it.
 	 * @param doc the DOM document
@@ -1975,11 +2016,14 @@ public class DefaultDocumentLoader implements DocumentLoader {
         // 统计解析的 Bean 数量
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
+}
 ```
 
 
 
-==第19行==中，
+
+
+==第35行==中，
 
 - `documentReader.registerBeanDefinitions`通过获取到的`NamespaceResolve`，查找合适的`NamespaceHandler`完成文档解析，得到`BeanDefinition`，完成注册
 - `createReaderContext(resource)`主要是获取`NamespaceResolve`
@@ -2028,7 +2072,21 @@ BeanDefinitionDocumentReader接口通过registerBeanDefinitions()方法调用其
 
 ![image-20201112224018562](Spring笔记.assets/image-20201112224018562.png)
 
+点击[分析解析策略](# 分析解析策略)的`XmlBeanDefinitionReader`中的`documentReader.registerBeanDefinitions`：
+
 ```java
+public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+    ...
+    // 具体的解析过程由实现类 DefaultBeanDefinitionDocumentReader完成
+	documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+    ...
+}
+
+public interface BeanDefinitionDocumentReader {
+    void registerBeanDefinitions(Document doc, XmlReaderContext readerContext);
+}
+
+//进入接口的实现类
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
     /**
 	 * This implementation parses bean definitions according to the "spring-beans" XSD (or DTD, historically).
@@ -2037,10 +2095,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 */
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
-        // 获得 XML 描述符
+        // 获得XML描述符
 		this.readerContext = readerContext;
 		logger.debug("Loading bean definitions");
-        // 获得 Document 的根元素
+        // 获得Document的根元素
 		Element root = doc.getDocumentElement();
 		doRegisterBeanDefinitions(root);
 	}
@@ -2108,7 +2166,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 
 
-`registerBeanDefinitions`-> `doRegisterBeanDefinitions(root)`-> `parseBeanDefinitions(root, this.delegate);`(==43行==)
+`registerBeanDefinitions`-> `doRegisterBeanDefinitions(root)`-> `parseBeanDefinitions(root, this.delegate);`(==55行==)
 
 ```java
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
@@ -2166,13 +2224,21 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 
 
-通过上述 Spring IoC 容器对载入的 Bean 定义的文档解析可以看出，在Spring配置文件中可以使用`<import>`元素来导入IoC容器所需要的其他资源，Spring IoC容器在解析时首先将指定的资源加载到容器中。使用`<alias>`别名时，Spring IoC容器首先将别名元素所定义的别名注册到容器中。
+通过上述Spring IoC容器对载入的Bean定义的文档解析可以看出，在Spring配置文件中可以使用`<import>`元素来导入IoC容器所需要的其他资源，Spring IoC容器在解析时首先将指定的资源加载到容器中。使用`<alias>`别名时，Spring IoC容器首先将别名元素所定义的别名注册到容器中。
 
 
 
 ==第18行==：`delegate.parseCustomElement(ele)`解析自定义元素——`aop, mvc, tx`等标签。
 
 ```java
+public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
+    protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+        delegate.parseCustomElement(ele);
+    }
+}
+
+// 点击delegate.parseCustomElement(ele);
+
 public class BeanDefinitionParserDelegate {
     /**
 	 * Parse a custom element (outside of the default namespace).
@@ -2205,6 +2271,8 @@ public class BeanDefinitionParserDelegate {
 	}
 }
 ```
+
+
 
 
 
@@ -2456,7 +2524,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 
 
-然后调用`BeanDefinitionReaderUtils`的`registerBeanDefinition()`方法向Spring IoC容器注册解析的Bean：
+然后调用`BeanDefinitionReaderUtils`的`registerBeanDefinition()`方法**向Spring IoC容器注册解析的Bean**：
 
 ```java
 public class BeanDefinitionReaderUtils {
@@ -2538,7 +2606,9 @@ IoC容器初始化的基本步骤：
 
 # Spring 依赖注入运行原理
 
-Bean的依赖注入主要分为两个步骤，**首先调用`createBeaninstance()`方法生成Bean所包含的Java对象实例**，**然后调用`populateBean()`方法对Bean属性的依赖注入进行处理**！
+Bean的依赖注入主要分为两个步骤，**首先调用`createBeanInstance()`方法生成Bean所包含的Java对象实例**，**然后调用`populateBean()`方法对Bean属性的依赖注入进行处理**！
+
+![image-20201114121837743](Spring笔记.assets/image-20201114121837743.png)
 
 ## 依赖注入发生的时间
 
@@ -2567,15 +2637,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			// 1.Prepare this context for refreshing.
 			prepareRefresh();
             
-            // 2.Tell the subclass to refresh the internal bean factory.
-            
-            // 创建DefaultListableBeanFactory（真正生产和管理bean的容器）
-            // 加载BeanDefition并注册到BeanDefitionRegistry
-            // 通过NamespaceHandler解析自定义标签的功能（比如:context标签、aop标签、tx标签）
-            
-            // 告诉子类启动refreshBeanFactory()方法，
-            // Bean定义资源文件的载入从子类的refreshBeanFactory()方法启动
-            
+            // 2.Tell the subclass to refresh the internal bean factory.         
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
             
 			// 3.Prepare the bean factory for use in this context.
@@ -2586,11 +2648,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
                 // 创建Bean流程入口
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
-                
-                
-				// Last step: publish corresponding event.
-                // 初始化容器的生命周期事件处理器，并发布容器的生命周期事件
-				finishRefresh();
+                ...
 			}
 			...
 			finally {
@@ -2605,7 +2663,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 
-==第27行==`finishBeanFactoryInitialization(beanFactory)`：
+进入上述代码==第19行==`finishBeanFactoryInitialization(beanFactory)`：
 
 ```java
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
@@ -2649,7 +2707,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 
-==第35行==`beanFactory.preInstantiateSingletons()`：
+进入上述代码==第35行==`beanFactory.preInstantiateSingletons()`：
 
 进入`DefaultListableBeanFactory`类的`preInstantiateSingletons`方法，找到下面部分的代码，看到工厂Bean或者普通Bean，最终都是通过`getBean`的方法获取实例的：
 
@@ -2698,9 +2756,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 
 
-==第35行==`getBean(beanName)`：实际上创建Bean实例的操作是由`getBean`方法实现的！
+上述代码==第35行==`getBean(beanName)`：实际上创建Bean实例的操作是由`getBean`方法实现的！
 
-继续跟踪下去，进入到了`AbstractBeanFactory类`的`doGetBean方法`：
+继续跟踪下去，**进入到了`AbstractBeanFactory类`的`doGetBean方法`**：
 
 BeanFactory接口定义了Spring IoC容器的基本功能规范，是Spring IoC容器所应遵守的最低层和最基本的编程规范。BeanFactory接口中定义了几个getBean()方法。
 
@@ -2709,6 +2767,15 @@ BeanFactory接口定义了Spring IoC容器的基本功能规范，是Spring IoC�
 在BeanFactory中可以看到`Object getBean(String name)`方法，但它的具体实现在`AbstractBeanFactory`中：
 
 ```java
+ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+Video video = (Video) context.getBean("video");
+
+// 点击getBean("video")进入BeanFactory
+public interface BeanFactory {
+    Object getBean(String name) throws BeansException;
+}
+
+// 进入该方法实现类AbstractBeanFactory
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
     //---------------------------------------------------------------------
 	// Implementation of BeanFactory interface
@@ -2779,19 +2846,48 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 ## 开始实例化
 
-上面的源码只定义了根据Bean定义的不同模式采取的创建Bean实例对象的不同策略，具体的Bean实例对象的创建过程由`AbstractAutowireCapableBeanFactory`完成：
+上面的源码只定义了根据Bean定义的不同模式采取的创建Bean实例对象的不同策略，**具体的Bean实例对象的创建过程由`AbstractAutowireCapableBeanFactory`完成**：
 
-`createBean`-> `doCreateBean`(==67==)：`createBeanInstance`(==76==)；`populateBean`(==111==)
+`getBean`（==2==）-> `doGetBean`（==13==）-> `createBean`（==23==）-> `doCreateBean`(==87==)：`createBeanInstance`(==106==)；`populateBean`(==142==)
 
 ```java
-// AbstractBeanFactory.java
+ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+Video video = (Video) context.getBean("video");
+
+// 点击getBean("video")进入BeanFactory
+public interface BeanFactory {
+    Object getBean(String name) throws BeansException;
+}
+
+// 进入该方法实现类AbstractBeanFactory.java
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
-    if (mbd.isSingleton()) {
+    @Override
+	public Object getBean(String name) throws BeansException {
+		return doGetBean(name, null, null, false);
+	}
+    
+    protected <T> T doGetBean(
+			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
+			throws BeansException {
+        ...
+        if (mbd.isSingleton()) {
         sharedInstance = getSingleton(beanName, () -> {
             try {
                 return createBean(beanName, mbd, args);
             }
          ...
+         else if (mbd.isPrototype()) {
+             // It's a prototype -> create a new instance.
+			 Object prototypeInstance = null;
+			 try {
+                 beforePrototypeCreation(beanName);
+				 prototypeInstance = createBean(beanName, mbd, args);
+			 }
+    }
+    
+    protected abstract Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
+			throws BeanCreationException;
+    
 }
                                       
 // AbstractAutowireCapableBeanFactory.java
@@ -2936,9 +3032,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 通过源码可以看到，具体的依赖注入实现其实就在以下两个方法中：
 
-1. `createBeanlnstance()`(==76==)方法，**生成Bean所包含的Java对象实例** 。
+1. `createBeanlnstance()`(==106==)方法，**生成Bean所包含的Java对象实例** 。
 
-   - 在`createBeanlnstance()`方法中，根据指定的初始化策略，使用简单工厂、工厂方法或者容器的自动装配特性生成Java实例对象：`createBeanlnstance()`->`instantiateBean`->`getInstantiationStrategy`
+   - 在`createBeanlnstance()`方法中，根据指定的初始化策略，使用简单工厂、工厂方法或者容器的自动装配特性生成Java实例对象：`createBeanlnstance()`->`instantiateBean`->`getInstantiationStrategy().instantiate`
 
    ```java
    public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
@@ -3026,11 +3122,34 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 
 
-2. `populateBean()`(==113==)方法，**对Bean属性的依赖注入进行处理**。
+2. `populateBean()`(==142==)方法，**对Bean属性的依赖注入进行处理**。
 
    ```java
    public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
    		implements AutowireCapableBeanFactory {
+       protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
+   			throws BeanCreationException {
+           ...
+           // Initialize the bean instance.
+           // Bean对象的初始化，依赖注入在此触发
+   		Object exposedObject = bean;
+   		try {
+               // populateBean
+   			populateBean(beanName, mbd, instanceWrapper);
+               // 与AOP相关
+   			exposedObject = initializeBean(beanName, exposedObject, mbd);
+   		}
+           ...
+       }
+       
+       protected void populateBean(String beanName, RootBeanDefinition mbd, @Nullable BeanWrapper bw) {
+           ...
+           if (pvs != null) {
+   			applyPropertyValues(beanName, mbd, bw, pvs);
+   		}
+           ...
+       }
+       
        protected Object initializeBean(String beanName, Object bean, @Nullable RootBeanDefinition mbd) {
    		if (System.getSecurityManager() != null) {
    			AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
@@ -3040,7 +3159,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
    		}
    		else {
    			invokeAwareMethods(beanName, bean);
-   		}
+		}
    
    		Object wrappedBean = bean;
    		if (mbd == null || !mbd.isSynthetic()) {
@@ -3063,7 +3182,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
    	}
    }
    ```
-
+   
    ==第28行==`wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);`：AOP动态代理在此处发生！
 
 
@@ -3158,7 +3277,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 1. 属性值类型不需要强制转换时，不需要解析属性值，直接进行依赖注入。
 2. 属性值类型需要进行强制转换时，如对其他对象的引用等，首先需要解析属性值，然后对解析后的属性值进行依赖注入。
 
-**对属性值的解析**是在`BeanDefinitionValueResolver`类的`resolveValueIfNecessary`方法中进行的。**对属性值的依赖注入**是通过`bw.setPropertyValues`方法实现的 。
+**对属性值的解析**是在`BeanDefinitionValueResolver`类的`resolveValueIfNecessary`方法（==57行==）中进行的。**对属性值的依赖注入**是通过`bw.setPropertyValues`（==63行==）方法实现的 。
 
 ## 属性值解析与依赖注入
 
@@ -3177,6 +3296,8 @@ class BeanDefinitionValueResolver {
 上面的代码描述的是Spring是如何对引用类型、内部类及集合类型的属性进行解析的，解析完成后就可以进行依赖注入了。
 
 依赖注入的过程就是将Bean对象实例设置到它所依赖的Bean对象属性上。真正的依赖注入是通过`bw.setPropertyValues`方法实现的，~~该方法也使用了委派模式，在BeanWrapper接口中至少定义了方法声明，依赖注入的具体实现交由其实现类BeanWrapperlmpl完成~~（实际是由`PropertyAccessor`的抽象类`AbstractNestablePropertyAccessor`实现）：
+
+![image-20201114121837743](Spring笔记.assets/image-20201114121837743.png)
 
 
 
@@ -3207,7 +3328,18 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	@SuppressWarnings("unchecked")
 	private void processKeyedProperty(PropertyTokenHolder tokens, PropertyValue pv) {}
     
-    private void processLocalProperty(PropertyTokenHolder tokens, PropertyValue pv) {}
+    private void processLocalProperty(PropertyTokenHolder tokens, PropertyValue pv) {
+        ...
+        ph.setValue(valueToApply);
+        ...
+    }
+    
+    public abstract void setValue(@Nullable Object value) throws Exception;
+}
+
+public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements BeanWrapper {
+    @Override
+	public void setValue(@Nullable Object value) throws Exception {}
 }
 ```
 

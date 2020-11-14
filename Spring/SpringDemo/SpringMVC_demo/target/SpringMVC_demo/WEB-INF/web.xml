@@ -1,0 +1,35 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+
+    <display-name>Archetype Created Web Application</display-name>
+
+    <!-- 配置前端控制器 -->
+    <servlet>
+        <servlet-name>SpringMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+
+        <!-- 设置spring配置文件路径 -->
+        <!-- 如果不设置初始化参数，那么DispatcherServlet会读取默认路径下的配置文件 -->
+        <!-- 默认配置文件路径：/WEB-INF/springmvc-servlet.xml -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:SpringMVC.xml</param-value>
+        </init-param>
+
+        <!-- 指定初始化时机，设置为2，表示Tomcat启动时，它会跟随着启动，DispatcherServlet会跟随着初始化 -->
+        <!-- 如果没有指定初始化时机，DispatcherServlet就会在第一次被请求的时候，才会初始化，而且只会被初始化一次(单例模式) -->
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>SpringMVC</servlet-name>
+        <!-- url-pattern的设置 -->
+        <!-- 不要配置为/*，否则报错 -->
+        <!-- 通俗解释：会拦截整个项目中的资源访问，包含JSP和静态资源的访问,对于JS的访问，SpringMVC提供了默认Handler处理器 -->
+        <!-- 但是对于JSP来讲，SpringMVC没有提供默认的处理器，我们也没有手动编写对应的处理器，此时按照SpringMVC的处理流程分析得知，它down了 -->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+</web-app>
