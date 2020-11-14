@@ -300,7 +300,9 @@ public class RoleTest {
 
 
 
-# MyBatis核心组件
+
+
+# MyBatis实例分析
 
 持久层可以将业务数据存储到磁盘，具备长期存储能力。
 
@@ -543,6 +545,623 @@ Role role = roleDao.getRole(1L);
 
    - **Mapper是一个接口，它由SqlSession所创建，由于SqlSession的关闭，它的数据库连接资源也会消失，所以它的生命周期应该小于等于SqlSession的生命周期**。
    - **Mapper代表的是一个请求中的业务处理，所以它应该在一个请求中，一旦处理完了相关的业务，就应该废弃它**。
+
+
+
+# MyBatis构建与执行过程
+
+参考资料：[**互联网轻量级SSM框架解密:Spring、Spring MVC、MyBatis源码深度剖析**]()
+
+## MyBatis模块
+
+MyBatis通过mybatis-3的应用程序接口和`ibatis-spring`向用户提供SQL访问方法，而`ibatis-spring`底层仍依赖`mybatis-3`和`spring-tx`来实现
+对`SQL Mapping`和事务的支持。
+
+mybatis-3实现了SQL映射的全部功能，通过`构建器`构建配置环境和JDBC环境，对应用程序提供接口并使用执行器执行SQL。
+
+![image-20201110155155834](MyBatis笔记.assets/image-20201110155155834.png)
+
+- `ibatis-spring`：在实际项目中，大部分应用都将Spring作为对象容器，开发者除了可以使用原生的MyBatis提供的接入方法，还可以使用
+  **MyBatis团队开发的支持Spring环境的集成工具**。该项目提供了标准的模板接口、事务支持和便捷的注册映射器。
+
+- 应用程序接口：包装了常用的SQL访问方法，向应用程序提供统一的访问接口。
+- 构建器（Builder）：MyBatis运行环境的初始化构建器，**负责构建配置信息及SQL映射关系**。使用解析器解析配置，支持以`XML`和`注释`的形式进行配置。
+- 执行器（Executor）：提供标准的SQL访问接口，支持缓存、动态SQL等高级特性。
+- 配置（Configuration）：MyBatis 运行时的所有上下文信息，是**整个MyBatis的核心**。**构建器**最终用于**构造Configuration类的对象**，**执行器**运行过程中的所有配置、变量和构造工厂都在配置模块中。
+- spring-tx：在与Spring集成的情况下，MyBatis委托Spring来管理将要执行的底层JDBC对象、自身的构建器和执行器的生命周期。
+- jdbc：与数据库交互的JDBC接口、驱动。
+
+
+
+## 构建阶段
+
+MyBatis需要通过**初始化**来准备运行时环境。在初始化阶段**输入的是`XML`和`字节码`，输出结果是`configuration对象`**。
+
+`XMLConfigBuilder`和`XMLMapperBuilder`这两个构建器是MyBatis构建阶段的核心：
+
+![image-20201110161940857](MyBatis笔记.assets/image-20201110161940857.png)
+
+MyBatis构建阶段主要的产出结果和参与构建的构建器如下，它们互相协作，实现了整个**MyBatis执行前的准备工作**：
+
+- `SqlSessionFactory`：管理**`数据库会话`、`聚合configuration对象`**，是构建阶段的重要输出结果。
+- `SqlSessionFactoryBuilder`：`SqlSessionFactory的构造器`，可以自己解析配置，也可以直接传入提前构建好的配置对象构建`SqlSessionFactory`。
+- `Configuration`：**存储所有MyBatis运行时的配置**。
+- `BaseBuilder`：构造器基类，处理configuration、typeAlias及typeHandler对象。
+- **`XMLConfigBuilder`**：**解析XML定义的`configuration对象`**。
+- **`XMLMapperBuilder`**：**解析XML定义的`SQL映射配置对象集合`**。
+- `MapperRegistry`：configuration对象中的SQL映射配置对象的注册机。
+- `MapperAnnotationBuilder`：解析注释定义的SQLMapper对象集合。
+
+
+
+![image-20201110162617275](MyBatis笔记.assets/image-20201110162617275.png)
+
+- MyBatis构建阶段的**调用入口类**是`SqlSessionFactoryBuilder`，它会**调用`XMLConfigBuilder`构建配置**。
+- `XMLConfigBuilder`会**调用`XMLMapperBuilder`（以XML形式定义SQL Mapper时）构建SQL Mapper映射**。
+- `SqlSessionFactoryBuilder`在**得到初始化的`configuration对象`**后**用其构建`SqlSessionFactory`**。
+- `SqlSessionFactory`是**生产`SqlSession对象`的工厂**，`SqlSession`则是MyBatis**执行阶段的关键入口类**。
+
+
+
+### SqlSessionFactoryBuilder
+
+[SqlSessionFactoryUtils](# SqlSessionFactoryUtils)：
+
+```java
+String resource = "resources/mybatis-config.xml";
+inputStream = Resources.getResourceAsStream(resource);
+sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+```
+
+
+
+在`SqlSessionFactoryBuilder`中有很多重载的`build()`方法，但核心方法有以下两种：
+
+```java
+public class SqlSessionFactoryBuilder {
+  //  ...
+  public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
+    try {
+      // 初始化解析器
+      XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
+      // 将配置文件的文件流解析成configuration对象
+      return build(parser.parse());
+    } catch (Exception e) {
+      throw ExceptionFactory.wrapException("Error building SqlSession.", e);
+    } finally {
+      ErrorContext.instance().reset();
+      try {
+        inputStream.close();
+      } catch (IOException e) {
+        // Intentionally ignore. Prefer previous error.
+      }
+    }
+  }
+
+  public SqlSessionFactory build(Configuration config) {
+    return new DefaultSqlSessionFactory(config);
+  }
+
+}
+```
+
+
+
+- `SqlSessionFactory#build(InputStream inputStream, String environment, Properties properties)`首先生成`XMLConfigBuilder对象`，然后调用`XMLConfigBuilder#parse()`方法**将配置文件的文件流解析成`configuration对象`**。
+
+  ```java
+  public class XMLConfigBuilder extends BaseBuilder {
+    // ...
+    public XMLConfigBuilder(Reader reader, String environment, Properties props) {
+      this(new XPathParser(reader, true, props, new XMLMapperEntityResolver()), environment, props);
+    }  
+    
+    private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+      super(new Configuration());
+      ErrorContext.instance().resource("SQL Mapper Configuration");
+      this.configuration.setVariables(props);
+      this.parsed = false;
+      this.environment = environment;
+      this.parser = parser;
+    }
+  
+    public Configuration parse() {
+      if (parsed) {
+        throw new BuilderException("Each XMLConfigBuilder can only be used once.");
+      }
+      parsed = true;
+      parseConfiguration(parser.evalNode("/configuration"));
+      return configuration;
+    }
+  }
+  ```
+
+  
+
+- `SqlSessionFactory#build(Configuration config)`在`configuration对象`解析完成后，**使用configuration对象构建`DefaultSqlSessionFactory`对象**
+
+
+
+### XmlConfigBuilder的初始化
+
+
+
+```java
+String resource = "resources/mybatis-config.xml";
+inputStream = Resources.getResourceAsStream(resource);
+// sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
+
+public class XMLConfigBuilder extends BaseBuilder {
+
+  public XMLConfigBuilder(InputStream inputStream, String environment, Properties props) {
+    this(new XPathParser(inputStream, true, props, new XMLMapperEntityResolver()), environment, props);
+  }
+
+}
+```
+
+1.`sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);`
+
+2.`XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);`
+
+3.`new XPathParser(inputStream, true, props, new XMLMapperEntityResolver())`
+
+
+
+**MyBatis只支持XML形式的Configuration配置**，`XPathParser`是XML解析的工具类：
+
+![image-20201110201646345](MyBatis笔记.assets/image-20201110201646345.png)
+
+**文件流**会被构建成XPathParser对象parser：
+
+```java
+public class XPathParser{
+    public XPathParser(Reader reader, boolean validation, Properties variables, EntityResolver entityResolver) {
+        commonConstructor(validation, variables, entityResolver);
+    	this.document = createDocument(new InputSource(reader));
+  	}
+}
+```
+
+**私有的构造函数用于初始化configuration对象及赋值核心属性**：
+
+```java
+public class XMLConfigBuilder extends BaseBuilder {
+  // ...
+  public XMLConfigBuilder(Reader reader, String environment, Properties props) {
+    this(new XPathParser(reader, true, props, new XMLMapperEntityResolver()), environment, props);
+  }  
+  
+  private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+    super(new Configuration());
+    ErrorContext.instance().resource("SQL Mapper Configuration");
+    this.configuration.setVariables(props);
+    this.parsed = false;
+    this.environment = environment;
+    this.parser = parser;
+  }
+
+  public Configuration parse() {
+    if (parsed) {
+      throw new BuilderException("Each XMLConfigBuilder can only be used once.");
+    }
+    parsed = true;
+    parseConfiguration(parser.evalNode("/configuration"));
+    return configuration;
+  }
+}
+```
+
+`XMLConfigBuilder`构建一个configuration对象，然后调用父类`BaseBuilder`的构造函数，将`properties`变量赋值到configuration对象：
+
+```java
+private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+    super(new Configuration());
+  }
+
+//
+public abstract class BaseBuilder {
+  protected final Configuration configuration;
+  protected final TypeAliasRegistry typeAliasRegistry;
+  protected final TypeHandlerRegistry typeHandlerRegistry;
+
+  public BaseBuilder(Configuration configuration) {
+    this.configuration = configuration;
+    this.typeAliasRegistry = this.configuration.getTypeAliasRegistry();
+    this.typeHandlerRegistry = this.configuration.getTypeHandlerRegistry();
+  }
+}
+```
+
+
+
+### MyBatis配置文件
+
+**Configuration配置文件**的XML格式定义为`mybatis-3-config.dtd`：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!-- 别名 -->
+    <typeAliases>
+        <typeAlias alias="role" type="mybatis.entity.Role"/>
+    </typeAliases>
+
+    <!-- 数据库环境 -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/MyBatisDemo"/>
+                <property name="username" value="root"/>
+                <property name="password" value="admin"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 映射文件 -->
+    <mappers>
+        <mapper resource="resources/RoleMapper.xml"/>
+    </mappers>
+</configuration>
+```
+
+![image-20201110203719693](MyBatis笔记.assets/image-20201110203719693.png)
+
+
+
+具体的标签功能和配置方式详见：https://mybatis.org/mybatis-3/zh/configuration.html
+
+
+
+### 解析配置文件构建Configuration配置
+
+**Configuration类的对象的大部分构建是在XMLConfigBuilder中完成**的，但是运**行环境Environment**和**SQL映射**依赖其他两个Builder类实现：
+
+![image-20201110203847747](MyBatis笔记.assets/image-20201110203847747.png)
+
+**`SqlSessionFactoryBuilder`在初始化之后，会调用`XmlConfigBuilder`的`parse()方法`将配置文件初始化到`configuration对象`中**。
+
+```java
+public class XMLConfigBuilder extends BaseBuilder {
+  // ...
+  public XMLConfigBuilder(Reader reader, String environment, Properties props) {
+    this(new XPathParser(reader, true, props, new XMLMapperEntityResolver()), environment, props);
+  }  
+  
+  private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+    super(new Configuration());
+    ErrorContext.instance().resource("SQL Mapper Configuration");
+    this.configuration.setVariables(props);
+    this.parsed = false;
+    this.environment = environment;
+    this.parser = parser;
+  }
+
+  public Configuration parse() {
+    if (parsed) {
+      throw new BuilderException("Each XMLConfigBuilder can only be used once.");
+    }
+    parsed = true;
+      // 从配置文件的Configuration处开始解析配置
+    parseConfiguration(parser.evalNode("/configuration"));
+    return configuration;
+  }
+}
+```
+
+
+
+在**配置文件解析阶段**，`XPathParser的evalNode()方法`在`XmlConfigBuilder`中经常被调用，目的就是**使用`XPath接口`获取解析好的document对象中对应元素的DOM节点**，该操作在整个构建过程中被广泛应用。
+
+```java
+public class XPathPaser{
+  public XNode evalNode(String expression) {
+    return evalNode(document, expression);
+  }
+
+  public XNode evalNode(Object root, String expression) {
+    Node node = (Node) evaluate(expression, root, XPathConstants.NODE);
+    if (node == null) {
+      return null;
+    }
+    return new XNode(this, node, variables);
+  }
+}
+```
+
+
+
+`parse()`通过`evalNode()`获取配置文件根节点的`configuration元素`
+
+```java
+public class XMLConfigBuilder extends BaseBuilder {
+
+  public Configuration parse() {
+    if (parsed) {
+      throw new BuilderException("Each XMLConfigBuilder can only be used once.");
+    }
+    parsed = true;
+      // 从配置文件的Configuration处开始解析配置
+    parseConfiguration(parser.evalNode("/configuration"));
+    return configuration;
+  }
+}
+```
+
+再调用`parseConfiguration()`完成解析操作：
+
+```java
+public class XMLConfigBuilder extends BaseBuilder {
+    private void parseConfiguration(XNode root) {
+        try {
+            // 加载属性配置
+      		propertiesElement(root.evalNode("properties"));
+      		Properties settings = settingsAsProperties(root.evalNode("settings"));
+      		loadCustomVfs(settings);
+      		loadCustomLogImpl(settings);
+          	typeAliasesElement(root.evalNode("typeAliases"));
+          	pluginElement(root.evalNode("plugins"));
+          	objectFactoryElement(root.evalNode("objectFactory"));
+          	objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+          	reflectorFactoryElement(root.evalNode("reflectorFactory"));
+          	settingsElement(settings);
+          	// read it after objectFactory and objectWrapperFactory issue #631
+          	environmentsElement(root.evalNode("environments"));
+          	databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+          	typeHandlerElement(root.evalNode("typeHandlers"));
+            // 加载SQL Mapper
+          	mapperElement(root.evalNode("mappers"));
+    	} catch (Exception e) {
+            throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
+        }
+  	}
+}
+```
+
+**`mapperElement()方法`构建SQL Mapper**。从这个方法开始，构建过程进入第2个重要阶段：**`SQL Mapper初始化阶段`**！
+
+
+
+### mapperElement
+
+```java
+public class XMLConfigBuilder extends BaseBuilder {
+
+  private final XPathParser parser;
+
+  private void mapperElement(XNode parent) throws Exception {
+    if (parent != null) {
+      for (XNode child : parent.getChildren()) {
+        if ("package".equals(child.getName())) {
+          String mapperPackage = child.getStringAttribute("name");
+          configuration.addMappers(mapperPackage);
+        } else {
+          String resource = child.getStringAttribute("resource");
+          String url = child.getStringAttribute("url");
+          String mapperClass = child.getStringAttribute("class");
+          if (resource != null && url == null && mapperClass == null) {
+            // 使用XMLMapperBuilder构建
+            ErrorContext.instance().resource(resource);
+            InputStream inputStream = Resources.getResourceAsStream(resource);
+            XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
+            mapperParser.parse();
+          } else if (resource == null && url != null && mapperClass == null) {
+            ErrorContext.instance().resource(url);
+            InputStream inputStream = Resources.getUrlAsStream(url);
+            XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());
+            mapperParser.parse();
+          } else if (resource == null && url == null && mapperClass != null) {
+            Class<?> mapperInterface = Resources.classForName(mapperClass);
+            configuration.addMapper(mapperInterface);
+          } else {
+            throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+
+
+**`XMLConfigBuilder`在解析SQL Mapper配置**时如果遇到直接定义resource或URL并且mapperClass为空的情况，则会调用`XmlMapperBuilder#parse()`直接解析文件！
+
+```java
+InputStream inputStream = Resources.getResourceAsStream(resource);
+XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
+mapperParser.parse();
+```
+
+
+
+### SQL映射的构建
+
+#### mapper配置文件
+
+`mybatis-3-mapper.dtd`定义了**SQL Mapper配置文件**支持的内容：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.dao.RoleDao">
+    <insert id="insertRole" parameterType="role">
+		insert into table_role(role_name, note) values(#{roleName}, #{note})
+	</insert>
+</mapper>
+```
+
+![image-20201110210203041](MyBatis笔记.assets/image-20201110210203041.png)
+
+mapper元素定义的内容都是与CRUD操作相关！
+
+
+
+#### Configuration类与mapper相关的类
+
+MyBatis的SQL Mapping配置被保存在Configuration类的对象中，`与Configuration关联的类`和`Configuration类中与SQL Mapping有关的属
+性`列表如图所示：
+
+![image-20201110210622927](MyBatis笔记.assets/image-20201110210622927.png)
+
+
+
+#### XmlMapperBuilder工作原理
+
+`XmlMapperBuilder`在[XmlConfigBuilder.mapperElement](# mapperElement)中被调用！
+
+**`XmlMapperBuilder#parse()`完成了大部分配置内容的加载工作，使`MapperRegistry注册机`将构建好的Mapper注册到configuration对象中**。为了支持以注释形式定义的SQL Mapper，`MapperAnnotationBuilder`也由XMLMapperBuilder调用
+
+![image-20201110211103374](MyBatis笔记.assets/image-20201110211103374.png)
+
+
+
+## 执行阶段
+
+```java
+// 构建阶段
+inputStream = Resources.getResourceAsStream(resource);
+sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+
+// 执行阶段
+sqlSession = sqlSessionFactory.openSession();
+RoleDao roleDao = sqlSession.getMapper(RoleDao.class);
+Role role = roleDao.getRole(1L);
+```
+
+
+
+执行阶段的关键类：
+
+![image-20201110214049008](MyBatis笔记.assets/image-20201110214049008.png)
+
+- `SqlSession`：MyBatis 的核心执行入口。**默认实现为`DefaultSqlSession`，该接口提供了大量的SQL调用方法**。
+- `Configuration`：**保存构建阶段的结果**，也负责在执行阶段初始化需要的变量
+- `MappedStatement`：配置好的映射SQL语句。
+- `BoundSql`：SQL的抽象，存放执行SQL的内容。
+- `Executor`：执行器。虚类`BaseExecutor`有`BatchExecutor`、`ClosedExecutor`、`ReuseExecutor`、`SimpleExecutor`等多种子类实现。
+- StatementHandler：处理SQL语句的管理器接口。
+- ResultSetHandler：处理结果集的管理器接口。
+
+
+
+### SqlSession及其关联类的构建过程
+
+MyBatis主要用工厂`SqlSessionFactory`来实现**SqlSession实例化**。
+
+- `DefaultSqlSessionFactory`是SqlSessionFactory中的一个子类，也是**SqlSessionFactory默认的实现类**，是**构建阶段`SqlSessionFactoryBuilder`的产物**。
+
+- 另一个子类`SqlSessionManager`利用ThreadLocal和代理拦截，保障了线程安全的、支持自动重连的SqlSession，这个类没有具体的生产使用。
+
+![image-20201110220254219](MyBatis笔记.assets/image-20201110220254219.png)
+
+`DefaultSqlSessionFactory`
+
+```java
+public class DefaultSqlSessionFactory implements SqlSessionFactory
+```
+
+只用于构造SqlSession的默认子类`DefaultSqlSession`对象
+
+```java
+public class DefaultSqlSession implements SqlSession
+```
+
+`DefaultSqlSessionFactory`提供了两种**创建`DefaultSqlSession`的方式**：`openSessionFromDataSource()`和`openSessionFromConnection()`。两者的区别只在于`TransactionFactory`生产Transaction对象的入参不同，在其他方面与Environment、Executor和SqlSession的构造方式相同。
+
+```java
+public class DefaultSqlSessionFactory implements SqlSessionFactory {
+
+  private final Configuration configuration;
+
+  public DefaultSqlSessionFactory(Configuration configuration) {
+    this.configuration = configuration;
+  }
+
+  @Override
+  public SqlSession openSession() {
+    return openSessionFromDataSource(configuration.getDefaultExecutorType(), null, false);
+  }
+
+  private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
+    Transaction tx = null;
+    try {
+      // 取出构建好的环境
+      final Environment environment = configuration.getEnvironment();
+      // 事务工厂构建事务
+      final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      // 从environment中获取数据源
+      tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+      // 生成执行器
+      final Executor executor = configuration.newExecutor(tx, execType);
+      // 构建SqlSession
+      return new DefaultSqlSession(configuration, executor, autoCommit);
+    } catch (Exception e) {
+      closeTransaction(tx); // may have fetched a connection so lets call close()
+      throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
+    } finally {
+      ErrorContext.instance().reset();
+    }
+  }
+
+  private SqlSession openSessionFromConnection(ExecutorType execType, Connection connection) {
+    try {
+      boolean autoCommit;
+      try {
+        // 从数据库连接元数据中获取自动提交的参数
+        autoCommit = connection.getAutoCommit();
+      } catch (SQLException e) {
+        // Failover to true, as most poor drivers
+        // or databases won't support transactions
+        autoCommit = true;
+      }
+      final Environment environment = configuration.getEnvironment();
+      final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      // 直接使用传入的数据源
+      final Transaction tx = transactionFactory.newTransaction(connection);
+      final Executor executor = configuration.newExecutor(tx, execType);
+      return new DefaultSqlSession(configuration, executor, autoCommit);
+    } catch (Exception e) {
+      throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
+    } finally {
+      ErrorContext.instance().reset();
+    }
+  }
+}
+```
+
+
+
+`Configuration#newExecutor(transaction, exectutorType)`为工厂方法，根据入参`executorType`构造`executor对象`。
+
+
+
+**至此SqlSession及其重要属性executor和configuration都已构造完成，应用程序可以通过SqlSession执行自己定义好的SQL**。
+
+
+
+### SqlSession执行查询操作
+
+SqlSession在执行查询操作时，**先从configuration对象那里获取配置好的SQL Mapper**，之后的工作就交给`Executor#query()`了。
+
+Executor类主要依赖`StatementHandler`和`ResultSetHandler`来完成查询工作，**`StatementHandler`负责查询，`ResultSetHandler`负责结果封装**。
+
+![image-20201110222729693](MyBatis笔记.assets/image-20201110222729693.png)
+
+
+
+## 小结
+
+MyBatis对外提供功能丰富且统一的执行入口，但自身对于**查询语句（DQL）**和修改语句（DML）是分开实现的。
+
+MyBatis会**从配置中找到用户需要执行的SQL语句`BoundSql`来创建连接、构建Statement和设置参数**。在**准备工作**做好后**Executor类会**
+**执行真正的SQL**，在处理好返回的结果集后，会**将封装好的对象返回给应用程序**。
 
 
 
@@ -843,7 +1462,7 @@ public class Test {
 
 
 
-# Spring整合MyBatis实现原理
+# MyBatis-Spring实例分析
 
 [Spring-myabtis整合配置文件](# 编写Spring-myabtis整合配置文件)
 
@@ -924,6 +1543,10 @@ Spring通过`org.mybatis.spring.SqlSessionFactoryBean`封装了MyBatis中的实�
 `org.mybatis.spring.SqlSessionFactoryBean#afterPropertiesSet`
 
 ```java
+public class SqlSessionFactoryBean
+    implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ApplicationEvent> {
+
+  @Override
   public void afterPropertiesSet() throws Exception {
     notNull(dataSource, "Property 'dataSource' is required");
     notNull(sqlSessionFactoryBuilder, "Property 'sqlSessionFactoryBuilder' is required");
@@ -932,6 +1555,81 @@ Spring通过`org.mybatis.spring.SqlSessionFactoryBean`封装了MyBatis中的实�
 
     this.sqlSessionFactory = buildSqlSessionFactory();
   }
+
+
+  protected SqlSessionFactory buildSqlSessionFactory() throws Exception {
+
+    final Configuration targetConfiguration;
+
+    XMLConfigBuilder xmlConfigBuilder = null;
+    if (this.configuration != null) {
+      targetConfiguration = this.configuration;
+      if (targetConfiguration.getVariables() == null) {
+        targetConfiguration.setVariables(this.configurationProperties);
+      } else if (this.configurationProperties != null) {
+        targetConfiguration.getVariables().putAll(this.configurationProperties);
+      }
+    } else if (this.configLocation != null) {  // 从configLocation开始加载
+      // 初始化builder
+      xmlConfigBuilder = new XMLConfigBuilder(this.configLocation.getInputStream(), null, this.configurationProperties);
+      // 构建configuration
+      targetConfiguration = xmlConfigBuilder.getConfiguration();
+    } else {
+      LOGGER.debug(
+          () -> "Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration");
+      targetConfiguration = new Configuration();
+      Optional.ofNullable(this.configurationProperties).ifPresent(targetConfiguration::setVariables);
+    }
+
+    // ......
+        
+    if (xmlConfigBuilder != null) {
+      try {
+        // 解析XML文件
+        xmlConfigBuilder.parse();
+        LOGGER.debug(() -> "Parsed configuration file: '" + this.configLocation + "'");
+      } catch (Exception ex) {
+        throw new NestedIOException("Failed to parse config resource: " + this.configLocation, ex);
+      } finally {
+        ErrorContext.instance().reset();
+      }
+    }
+
+    targetConfiguration.setEnvironment(new Environment(this.environment,
+        this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
+        this.dataSource));
+
+    if (this.mapperLocations != null) {
+      if (this.mapperLocations.length == 0) {
+        LOGGER.warn(() -> "Property 'mapperLocations' was specified but matching resources are not found.");
+      } else {
+        // 遍历mapper
+        for (Resource mapperLocation : this.mapperLocations) {
+          if (mapperLocation == null) {
+            continue;
+          }
+          try {
+            // 初始化mapper构造器
+            XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(mapperLocation.getInputStream(),
+                targetConfiguration, mapperLocation.toString(), targetConfiguration.getSqlFragments());
+            // 解析mapper文件
+            xmlMapperBuilder.parse();
+          } catch (Exception e) {
+            throw new NestedIOException("Failed to parse mapping resource: '" + mapperLocation + "'", e);
+          } finally {
+            ErrorContext.instance().reset();
+          }
+          LOGGER.debug(() -> "Parsed mapper file: '" + mapperLocation + "'");
+        }
+      }
+    } else {
+      LOGGER.debug(() -> "Property 'mapperLocations' was not specified.");
+    }
+
+    // 使用工厂构建sqlSession对象
+    return this.sqlSessionFactoryBuilder.build(targetConfiguration);
+  }
+}
 ```
 
 此函数主要目的就是对于`sqlSessionFactory`进行初始化：
@@ -1071,3 +1769,154 @@ public T getObject() throws Exception {
 ```
 
 这段代码正是我们在提供MyBatis独立使用的时候的一个代码调用。
+
+
+
+# Spring整合MyBatis源码
+
+`mybatis-spring`是项目的主要类，`SqlSessionFactory`和`SqlSessionTemplate`是其中的核心类：
+
+![image-20201110224155681](MyBatis笔记.assets/image-20201110224155681.png)
+
+## SqlSessionFactoryBean
+
+`SqlSessionFactoryBean`是MyBatis**配置初始化的入口**。
+
+SqlSessionFactoryBean首先初始化MyBatis的一个配置对象configuration，默认会建立空配置，只设置configuration Properties。如果应用程序设置了`configLocation`，**SqlSessionFactoryBean就会使用configLocation定位到的配置文件执行MyBatis的构建功能，进而得到configuration对象**。
+
+需要注意的是，SqlSessionFactoryBean在构建environment时，事务工厂使用的是`SpringManagedTransactionFactory`，最后调用`sqlSessionFactoryBuilder#build(configuration)`返回一个`DefaultSqlSessionFactory`。
+
+```java
+public class SqlSessionFactoryBean
+    implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ApplicationEvent> {
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    notNull(dataSource, "Property 'dataSource' is required");
+    notNull(sqlSessionFactoryBuilder, "Property 'sqlSessionFactoryBuilder' is required");
+    state((configuration == null && configLocation == null) || !(configuration != null && configLocation != null),
+        "Property 'configuration' and 'configLocation' can not specified with together");
+
+    this.sqlSessionFactory = buildSqlSessionFactory();
+  }
+
+
+  protected SqlSessionFactory buildSqlSessionFactory() throws Exception {
+
+    final Configuration targetConfiguration;
+
+    XMLConfigBuilder xmlConfigBuilder = null;
+    if (this.configuration != null) {
+      targetConfiguration = this.configuration;
+      if (targetConfiguration.getVariables() == null) {
+        targetConfiguration.setVariables(this.configurationProperties);
+      } else if (this.configurationProperties != null) {
+        targetConfiguration.getVariables().putAll(this.configurationProperties);
+      }
+    } else if (this.configLocation != null) {  // 从configLocation开始加载
+      // 初始化builder
+      xmlConfigBuilder = new XMLConfigBuilder(this.configLocation.getInputStream(), null, this.configurationProperties);
+      // 构建configuration
+      targetConfiguration = xmlConfigBuilder.getConfiguration();
+    } else {
+      LOGGER.debug(
+          () -> "Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration");
+      targetConfiguration = new Configuration();
+      Optional.ofNullable(this.configurationProperties).ifPresent(targetConfiguration::setVariables);
+    }
+
+    // ......
+        
+    if (xmlConfigBuilder != null) {
+      try {
+        // 解析XML文件
+        xmlConfigBuilder.parse();
+        LOGGER.debug(() -> "Parsed configuration file: '" + this.configLocation + "'");
+      } catch (Exception ex) {
+        throw new NestedIOException("Failed to parse config resource: " + this.configLocation, ex);
+      } finally {
+        ErrorContext.instance().reset();
+      }
+    }
+
+    targetConfiguration.setEnvironment(new Environment(this.environment,
+        this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
+        this.dataSource));
+
+    if (this.mapperLocations != null) {
+      if (this.mapperLocations.length == 0) {
+        LOGGER.warn(() -> "Property 'mapperLocations' was specified but matching resources are not found.");
+      } else {
+        // 遍历mapper
+        for (Resource mapperLocation : this.mapperLocations) {
+          if (mapperLocation == null) {
+            continue;
+          }
+          try {
+            // 初始化mapper构造器
+            XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(mapperLocation.getInputStream(),
+                targetConfiguration, mapperLocation.toString(), targetConfiguration.getSqlFragments());
+            // 解析mapper文件
+            xmlMapperBuilder.parse();
+          } catch (Exception e) {
+            throw new NestedIOException("Failed to parse mapping resource: '" + mapperLocation + "'", e);
+          } finally {
+            ErrorContext.instance().reset();
+          }
+          LOGGER.debug(() -> "Parsed mapper file: '" + mapperLocation + "'");
+        }
+      }
+    } else {
+      LOGGER.debug(() -> "Property 'mapperLocations' was not specified.");
+    }
+
+    // 使用工厂构建sqlSession对象
+    return this.sqlSessionFactoryBuilder.build(targetConfiguration);
+  }
+}
+```
+
+
+
+## MapperScannerConfigurer
+
+SqlSessionFactoryBean使用`MapperScannerConfigurer`扫描Mapper接口：
+
+```java
+public class MapperScannerConfigurer
+    implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationContextAware, BeanNameAware {
+
+  @Override
+  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
+    if (this.processPropertyPlaceHolders) {
+      processPropertyPlaceHolders();
+    }
+	// 初始化扫描器
+    ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
+    scanner.setAddToConfig(this.addToConfig);
+    scanner.setAnnotationClass(this.annotationClass);
+    scanner.setMarkerInterface(this.markerInterface);
+    scanner.setSqlSessionFactory(this.sqlSessionFactory);
+    scanner.setSqlSessionTemplate(this.sqlSessionTemplate);
+    scanner.setSqlSessionFactoryBeanName(this.sqlSessionFactoryBeanName);
+    scanner.setSqlSessionTemplateBeanName(this.sqlSessionTemplateBeanName);
+    scanner.setResourceLoader(this.applicationContext);
+    scanner.setBeanNameGenerator(this.nameGenerator);
+    scanner.setMapperFactoryBeanClass(this.mapperFactoryBeanClass);
+    if (StringUtils.hasText(lazyInitialization)) {
+      scanner.setLazyInitialization(Boolean.valueOf(lazyInitialization));
+    }
+    scanner.registerFilters();
+    scanner.scan(
+        StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
+  }
+}
+```
+
+初始化好的Bean对象会被注册到`applicationContext`上下文中。
+
+
+
+## MapperFactoryBean
+
+`MapperFactoryBean`的父类`SqlSessionDaoSupport`继承了`spring-tx`中的`DaoSupport`。实现的`checkDaoConfig()方法`可以检查`sqlSession`是否已经被初始化，**并检查在配置中是否有SQL Mapper**。`getObject()`实现了其工厂Bean的功能，能返回mapper对象，为`MapperScannerConfigurer`提供Mapper接口自动注入功能。

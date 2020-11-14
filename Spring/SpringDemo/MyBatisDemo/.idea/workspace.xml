@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0ae6074-2643-4034-87a2-ddbcc21283c9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../demo_with_spring/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../demo_with_spring/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../珍藏.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../../珍藏.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SpringMyBatisDemo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../SpringMyBatisDemo/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Spring笔记/MyBatis笔记.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../Spring笔记/MyBatis笔记.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Spring笔记/Spring笔记.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../Spring笔记/Spring笔记.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,26 +18,27 @@
     <session id="-2119585187">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
+          <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="class" value="6" />
-          <entry key="java" value="14" />
+          <entry key="class" value="10" />
+          <entry key="java" value="25" />
           <entry key="properties" value="1" />
-          <entry key="xml" value="2" />
+          <entry key="xml" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="CLASS" value="6" />
-          <entry key="JAVA" value="14" />
+          <entry key="CLASS" value="10" />
+          <entry key="JAVA" value="25" />
           <entry key="Properties" value="1" />
-          <entry key="XML" value="2" />
+          <entry key="XML" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
@@ -68,13 +71,35 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/mybatis/utils/SqlSessionFactoryUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="771">
-              <caret line="40" column="29" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
+            <state relative-caret-position="199">
+              <caret line="14" column="31" lean-forward="true" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSessionFactory.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="506">
+              <caret line="117" column="66" selection-start-line="117" selection-start-column="66" selection-end-line="117" selection-end-column="66" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSession.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-4905">
+              <caret line="47" column="52" selection-start-line="47" selection-end-line="47" selection-end-column="52" />
+              <folding>
+                <element signature="e#8933#8934#0" expanded="true" />
+                <element signature="e#8985#8986#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -186,10 +211,10 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="Def&#9;FILE&#9;jar://C:/Users/Chenzf/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSession.java&#10;Configuration&#9;PSI&#9;JAVA://org.apache.ibatis.session.Configuration&#10;DefaultSq&#9;PSI&#9;JAVA://org.apache.ibatis.session.defaults.DefaultSqlSession" />
+    <property name="SearchEverywhereHistoryKey" value="openSessionFromDataSource&#9;PSI&#9;JAVA://org.apache.ibatis.session.defaults.DefaultSqlSessionFactory#openSessionFromDataSource&#10;DefaultSqlSession&#9;FILE&#9;jar://C:/Users/Chenzf/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSession.java&#10;parseConfiguration&#9;PSI&#9;JAVA://javax.xml.parsers.ParserConfigurationException&#10;XMLMa&#9;PSI&#9;JAVA://org.apache.ibatis.builder.xml.XMLMapperBuilder&#10;Sql&#9;FILE&#9;jar://D:/Learning/Spring/SpringLib/mybatis-3.5.6/mybatis-3.5.6.jar!/org/apache/ibatis/session/SqlSessionFactoryBuilder.class&#10;XPath&#9;FILE&#9;jar://D:/Learning/Spring/SpringLib/mybatis-3.5.6/mybatis-3.5.6.jar!/org/apache/ibatis/parsing/XPathParser.class&#10;Def&#9;FILE&#9;jar://C:/Users/Chenzf/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSession.java&#10;Configuration&#9;PSI&#9;JAVA://org.apache.ibatis.session.Configuration&#10;DefaultSq&#9;PSI&#9;JAVA://org.apache.ibatis.session.defaults.DefaultSqlSession" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1604934898679" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1605017897245" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../SpringLib/mysql-connector-java-5.1.30.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -236,7 +261,7 @@
     </recent_temporary>
   </component>
   <component name="StructureViewFactory">
-    <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR" />
+    <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR,SHOW_INHERITED" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -250,18 +275,19 @@
       <updated>1604820248184</updated>
       <workItem from="1604820250995" duration="8649000" />
       <workItem from="1604933673685" duration="1131000" />
+      <workItem from="1605011249747" duration="5737000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9780000" />
+    <option name="totallyTimeSpent" value="15517000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4985591" visible="true" weight="0.25226668" />
-      <window_info id="Structure" order="1" sideWeight="0.50144094" side_tool="true" visible="true" weight="0.25226668" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49759847" visible="true" weight="0.25493333" />
+      <window_info active="true" id="Structure" order="1" sideWeight="0.50240153" side_tool="true" visible="true" weight="0.25493333" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
       <window_info id="UI Designer" order="4" />
@@ -329,20 +355,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/RoleMapper.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/resources/mybatis-config.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="15" column="49" selection-start-line="15" selection-start-column="49" selection-end-line="15" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/../../SpringLib/mybatis-3.5.6/mybatis-3.5.6.jar!/org/apache/ibatis/session/SqlSession.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="781">
@@ -354,17 +366,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="683">
           <caret line="282" column="14" selection-start-line="282" selection-start-column="14" selection-end-line="282" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSession.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="49" column="22" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="22" />
-          <folding>
-            <element signature="e#8933#8934#0" expanded="true" />
-            <element signature="e#8985#8986#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -393,6 +394,95 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/resources/mybatis-config.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="24" column="13" lean-forward="true" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/WinSoftware/JDK/jdk/src.zip!/javax/xml/xpath/XPath.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2772">
+          <caret line="100" column="17" selection-start-line="100" selection-start-column="17" selection-end-line="100" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../SpringLib/mybatis-3.5.6/mybatis-3.5.6.jar!/org/apache/ibatis/builder/xml/XMLConfigBuilder.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="660">
+          <caret line="84" column="51" selection-start-line="84" selection-start-column="51" selection-end-line="84" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../SpringLib/mybatis-3.5.6/mybatis-3.5.6.jar!/org/apache/ibatis/parsing/XPathParser.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="321">
+          <caret line="193" column="17" selection-start-line="193" selection-start-column="17" selection-end-line="193" selection-end-column="17" />
+          <folding>
+            <element signature="e#7193#7194#0" expanded="true" />
+            <element signature="e#7256#7257#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/../../SpringLib/mybatis-3.5.6/mybatis-3.5.6.jar!/org/apache/ibatis/session/SqlSessionFactoryBuilder.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="451">
+          <caret line="69" column="39" selection-start-line="69" selection-start-column="39" selection-end-line="69" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/builder/xml/XMLMapperBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/WinSoftware/JDK/jdk/src.zip!/javax/xml/parsers/ParserConfigurationException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="33" column="13" selection-start-line="33" selection-start-column="13" selection-end-line="33" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/parsing/XPathParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="214" column="30" selection-start-line="214" selection-start-column="30" selection-end-line="214" selection-end-column="30" />
+          <folding>
+            <element signature="e#6907#6908#0" expanded="true" />
+            <element signature="e#6954#6955#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/builder/xml/XMLConfigBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="378" column="50" lean-forward="true" selection-end-line="405" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/SqlSessionFactoryBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-263">
+          <caret line="38" column="27" selection-start-line="38" selection-start-column="27" selection-end-line="38" selection-end-column="27" />
+          <folding>
+            <element signature="e#1299#1300#0" expanded="true" />
+            <element signature="e#1348#1349#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/resources/RoleMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="550">
+          <caret line="25" column="9" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/mybatis/RoleTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -403,13 +493,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSession.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4905">
+          <caret line="47" column="52" selection-start-line="47" selection-end-line="47" selection-end-column="52" />
+          <folding>
+            <element signature="e#8933#8934#0" expanded="true" />
+            <element signature="e#8985#8986#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/SqlSessionFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="24" column="17" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/mybatis/utils/SqlSessionFactoryUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="771">
-          <caret line="40" column="29" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
+        <state relative-caret-position="199">
+          <caret line="14" column="31" lean-forward="true" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ideaLibSources/mybatis-3.5.6-sources.jar!/org/apache/ibatis/session/defaults/DefaultSqlSessionFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="117" column="66" selection-start-line="117" selection-start-column="66" selection-end-line="117" selection-end-column="66" />
         </state>
       </provider>
     </entry>
